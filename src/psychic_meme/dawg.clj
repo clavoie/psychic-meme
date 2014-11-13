@@ -1,9 +1,10 @@
-(ns psychic-meme.dawg)
+(ns psychic-meme.dawg
+  (:require [psychic-meme.private.dawg :as private]))
 
 (defn create
   "Creates a new directed acyclic word graph"
   []
-  (sorted-map nil (create-node nil)))
+  (sorted-map nil (private/create-node nil)))
 
 (defn add
   "Adds the items of a seq to the graph"
@@ -14,8 +15,8 @@
            other-values (rest seq-value)
            dawg dawg]
       (if (nil? value)
-        (add-edge dawg node-id :eos)
-        (let [[dawg child-id] (add-child dawg node-id value)]
+        (private/add-edge dawg node-id :eos)
+        (let [[dawg child-id] (private/add-child dawg node-id value)]
           (recur child-id
                  (first other-values)
                  (rest other-values)
