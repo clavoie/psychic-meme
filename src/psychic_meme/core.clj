@@ -30,6 +30,9 @@
       (let [node-id (gensym)]
         [(conj edges node-id) (assoc node-map node-id search-char) node-id]))))
 
+(defn add-eow-edge [edge-map node-id]
+  (assoc edge-map node-id (conj (edge-map node-id) :eow)))
+
 (defn dawg-add-word [dawg word]
   (let [str-word (str word)
         word-seq (seq str-word)]
@@ -39,7 +42,7 @@
            rest-chars (rest word-seq)
            current-node nil]
       (if (nil? char-to-add)
-        (create-dawg edge-map node-map)
+        (create-dawg (add-eow-edge edge-map current-node) node-map)
         (let [[new-edges new-node-map node-id] (dawg-if-missing (edge-map current-node) node-map char-to-add)]
           (recur (assoc edge-map current-node new-edges)
                  new-node-map
