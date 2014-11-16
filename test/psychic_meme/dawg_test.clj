@@ -21,5 +21,6 @@
 
 (deftest items-test
   (let [graph (create)
-        graph (add graph "hello")]
-    (println (items graph nil))))
+        graph (add (add (add graph "hello") "hit") "apple")]
+    (println (items graph nil))
+    (is (= 1 1))))

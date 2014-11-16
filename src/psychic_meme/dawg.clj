@@ -29,5 +29,13 @@
 (defn items
   "Returns a lazy sequence of all the items in the graph"
   [graph node-id]
-  (if (= :eos node-id) nil
-    (map #(cons (private/get-value graph %) (lazy-seq (items graph %))) (private/get-edges graph node-id))))
+  (if (= :eos node-id)
+    nil
+    (for [edge-id (private/get-edges graph node-id)
+          :let [node-value (private/get-value graph node-id)]]
+      (if (= :eos edge-id)
+        (list node-value)
+        (if (nil? node-value)
+          (lazy-seq (items graph edge-id))
+          (cons node-value
+                (lazy-seq (items graph edge-id))))))))
