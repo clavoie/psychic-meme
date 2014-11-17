@@ -15,12 +15,14 @@
     (let [graph (create)
           graph (add (add graph "hello") "hi")
           node-count (count graph)
-          root-edges (count (private/get-edges  graph nil))]
+          root-edges (count (private/get-edges graph nil))]
       (is (= node-count 7))
-      (is (= root-edges 2)))))
+      (is (= root-edges 1)))))
 
 (deftest items-test
   (let [graph (create)
-        graph (add (add (add graph "hello") "hit") "apple")]
-    (println (items graph nil))
+        graph (add (add (add graph "hello") "hit") "apple")
+        items (items graph)
+        str-items (for [item items] (apply str item))]
+    (println str-items)
     (is (= 1 1))))

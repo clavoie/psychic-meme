@@ -27,15 +27,19 @@
                  dawg))))))
 
 (defn items
-  "Returns a lazy sequence of all the items in the graph"
-  [graph node-id]
-  (if (= :eos node-id)
-    nil
-    (for [edge-id (private/get-edges graph node-id)
-          :let [node-value (private/get-value graph node-id)]]
-      (if (= :eos edge-id)
-        (list node-value)
-        (if (nil? node-value)
-          (lazy-seq (items graph edge-id))
-          (cons node-value
-                (lazy-seq (items graph edge-id))))))))
+  "Returns a lazy sequence of all the items in the graph
+  "
+  ([graph]
+   (items graph nil))
+  ([graph node-id]
+   (cond
+    (nil? node-id) (apply concat (for [edge-id (private/get-edges graph node-id)] (items graph edge-id)))
+    (= :eos node-id) '()
+    true
+    (apply concat
+           (for [edge-id (private/get-edges graph node-id)
+                 :let [node-value (private/get-value graph node-id)]]
+             (if (= :eos edge-id)
+               ;; not a seq yet, wrap in seq. the extra list will be removed by the apply / concat
+               (list (list node-value))
+               (map #(cons node-value %) (items graph edge-id))))))))
