@@ -27,7 +27,14 @@
                  dawg))))))
 
 (defn items
-  "Returns a lazy sequence of all the items in the graph
+  "Returns a lazy sequence of all the reconstructed sequences in the graph,
+  or an empty sequence if the graph contains no sequences. Example:
+
+  ((1 2 3) (4 5 6) (7 8 9))
+
+  graph - the graph
+  node-id - (optional), the id of the node to start at in the graph. nil will start at
+            the beginning of the graph
   "
   ([graph]
    (items graph nil))

@@ -25,4 +25,5 @@
         items (items graph)
         str-items (for [item items] (apply str item))]
     (println str-items)
+    (is ())
     (is (= 1 1))))
