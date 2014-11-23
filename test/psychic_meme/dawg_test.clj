@@ -13,17 +13,18 @@
 (deftest add-test
   (testing "Adding an item to the graph"
     (let [graph (create)
-          graph (add (add graph "hello") "hi")
+          graph (add graph ["hello" "hi"])
           node-count (count graph)
           root-edges (count (private/get-edges graph nil))]
       (is (= node-count 7))
       (is (= root-edges 1)))))
 
 (deftest items-test
-  (let [graph (create)
-        graph (add (add (add graph "hello") "hit") "apple")
-        items (items graph)
-        str-items (for [item items] (apply str item))]
-    (println str-items)
-    (is ())
-    (is (= 1 1))))
+  (testing "Sequences reconstructed from the graph"
+    (let [graph (create)
+          words ["hello" "hit" "apple"]
+          graph (add graph words)
+          items (items graph)
+          str-items (for [item items] (apply str item))]
+      (doseq [word words]
+        (is (some #(= word %) str-items))))))

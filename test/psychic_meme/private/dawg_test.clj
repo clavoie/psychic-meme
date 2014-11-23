@@ -96,3 +96,16 @@
           [graph node-id-2] (add-child graph nil node-value)]
       (is (= node-value (get-value graph node-id-1)))
       (is (= node-id-1 node-id-2)))))
+
+(deftest add-value-test
+  (testing "Adding a single value to the graph"
+    (let [graph (dawg/create)
+          value (list 1 2 3)
+          graph (add-value graph value)
+          node-id-1 (get-child graph nil 1)
+          node-id-2 (get-child graph node-id-1 2)
+          node-id-3 (get-child graph node-id-2 3)]
+      (is (= 4 (count graph)))
+      (is (not (nil? node-id-1)))
+      (is (not (nil? node-id-2)))
+      (is (not (nil? node-id-3))))))
