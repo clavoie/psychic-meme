@@ -6,5 +6,7 @@
   :dependencies [[org.clojure/clojure "1.6.0"]]
   :global-vars {*warn-on-reflection* true}
   :plugins [[codox "0.8.10"]]
-  :codox {:src-dir-uri "http://github.com/clavoie/psychic-meme/blob/master/"
-          :src-linenum-anchor-prefix "L"})
+  :codox {
+          ;:src-dir-uri "http://github.com/clavoie/psychic-meme/blob/master/"
+          ;:src-linenum-anchor-prefix "L"
+          })
