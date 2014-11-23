@@ -1,7 +1,7 @@
-(ns psychic-meme.private.dawg-test
+(ns psychic-meme.private.core-test
   (:require [clojure.test :refer :all]
-            [psychic-meme.dawg :as dawg]
-            [psychic-meme.private.dawg :refer :all]))
+            [psychic-meme.core :as dawg]
+            [psychic-meme.private.core :refer :all]))
 
 (deftest create-node-test
   (testing "Node created as a map with appropriate fields"

@@ -1,4 +1,4 @@
-(ns psychic-meme.private.dawg)
+(ns psychic-meme.private.core)
 
 (defn create-node
   "Creates a new node in the directed graph.
