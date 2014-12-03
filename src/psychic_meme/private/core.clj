@@ -1,4 +1,4 @@
-(ns psychic-meme.private.dawg)
+(ns psychic-meme.private.core)
 
 (defn create-node
   "Creates a new node in the directed graph.
@@ -78,3 +78,24 @@
           dawg (add-node dawg child-id value)
           dawg (add-edge dawg node-id child-id)]
       [dawg child-id])))
+
+
+(defn add-value
+  "Adds a single value to the graph, returning the new graph
+
+  dawg - the graph to which the value will be added
+  value - the value to add to the graph. (seq value) will be used to
+          generate the seq values added to the graph"
+  [dawg value]
+  (let [seq-value (seq value)]
+    (loop [node-id nil
+           value (first seq-value)
+           other-values (rest seq-value)
+           dawg dawg]
+      (if (nil? value)
+        (add-edge dawg node-id :eos)
+        (let [[dawg child-id] (add-child dawg node-id value)]
+          (recur child-id
+                 (first other-values)
+                 (rest other-values)
+                 dawg))))))

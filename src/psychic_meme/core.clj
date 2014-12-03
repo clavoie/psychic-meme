@@ -1,51 +1,47 @@
-(ns psychic-meme.core)
+(ns psychic-meme.core
+  (:require [psychic-meme.private.core :as private]))
 
-(defn create-dawg
-  "Creates an empty word graph, or creates a new one if an existing edge map
-   and node map is supplied."
-  ([]
-     (create-dawg {nil []} {}))
-  ([edge-map node-map]
-     {:edge-map edge-map
-       :node-map node-map}))
+(defn create
+  "Creates a new directed acyclic graph"
+  []
+  (sorted-map nil (private/create-node nil)))
 
-(defn edge-to-char?
-  "Tests if there is an existing edge to a character from the current node in
-   the word graph.
+(defn add
+  "Adds the items of a seq to the graph, returning the new graph.
 
-   edges       - sequence of node identifiers for the current node in the graph
-   node-map    - the map of all the nodes in the graph
-   search-char - the character to test if there is an existing edge from this node"
-  [edges node-map search-char]
-  (some (fn [node-key]
-           (let [node-value (node-map node-key)]
-             (if (= node-value search-char) node-key)))
-        edges))
+  dawg - the graph to add the items to
+  values - the values to add to the graph. Each value is a sequence.
+           (seq value) will be used to create the sequence which is added to the graph"
+  [dawg values]
+  (loop [dawg dawg
+         values values]
+    (if (empty? values)
+      dawg
+      (recur
+       (private/add-value dawg (first values))
+       (rest values)))))
 
-(defn dawg-if-missing [edges node-map search-char]
-  (let [edge-id (edge-to-char? edges node-map search-char)
-        edges (if-not edges [] edges)]
-    (if edge-id
-      [edges node-map edge-id]
-      (let [node-id (gensym)]
-        [(conj edges node-id) (assoc node-map node-id search-char) node-id]))))
+(defn items
+  "Returns a lazy sequence of all the reconstructed sequences in the graph,
+  or an empty sequence if the graph contains no sequences. Example:
 
-(defn add-eow-edge [edge-map node-id]
-  (assoc edge-map node-id (conj (edge-map node-id) :eow)))
+  ((1 2 3) (4 5 6) (7 8 9))
 
-(defn dawg-add-word [dawg word]
-  (let [str-word (str word)
-        word-seq (seq str-word)]
-    (loop [edge-map (:edge-map dawg)
-           node-map (:node-map dawg)
-           char-to-add (first word-seq)
-           rest-chars (rest word-seq)
-           current-node nil]
-      (if (nil? char-to-add)
-        (create-dawg (add-eow-edge edge-map current-node) node-map)
-        (let [[new-edges new-node-map node-id] (dawg-if-missing (edge-map current-node) node-map char-to-add)]
-          (recur (assoc edge-map current-node new-edges)
-                 new-node-map
-                 (first rest-chars)
-                 (rest rest-chars)
-                 node-id))))))
+  graph - the graph
+  node-id - (optional), the id of the node to start reconstructing sequences at in the graph.
+            If no id is provided sequences will start being reconstructed from the root node
+  "
+  ([graph]
+   (items graph nil))
+  ([graph node-id]
+   (cond
+    (nil? node-id) (apply concat (for [edge-id (private/get-edges graph node-id)] (items graph edge-id)))
+    (= :eos node-id) '()
+    true
+    (apply concat
+           (for [edge-id (private/get-edges graph node-id)
+                 :let [node-value (private/get-value graph node-id)]]
+             (if (= :eos edge-id)
+               ;; not a seq yet, wrap in seq. the extra list will be removed by the apply / concat
+               (list (list node-value))
+               (map #(cons node-value %) (items graph edge-id))))))))
