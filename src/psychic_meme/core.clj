@@ -9,16 +9,16 @@
 (defn add
   "Adds the items of a seq to the graph, returning the new graph.
 
-  dawg - the graph to add the items to
+  graph - the graph to add the items to
   values - the values to add to the graph. Each value is a sequence.
            (seq value) will be used to create the sequence which is added to the graph"
-  [dawg values]
-  (loop [dawg dawg
+  [graph values]
+  (loop [graph graph
          values values]
     (if (empty? values)
-      dawg
+      graph
       (recur
-       (private/add-value dawg (first values))
+       (private/add-value graph (first values))
        (rest values)))))
 
 (defn items
