@@ -1,4 +1,4 @@
-(defproject psychic-meme "1.0.0"
+(defproject psychic-meme "1.0.1-SNAPSHOT"
   :description "Radix tree for Clojure"
   :url "https://github.com/clavoie/psychic-meme"
   :license {:name "Eclipse Public License"
