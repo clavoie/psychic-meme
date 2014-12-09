@@ -25,7 +25,7 @@
   "Returns a lazy sequence of all the reconstructed sequences in the graph,
   or an empty sequence if the graph contains no sequences. Example:
 
-  ((1 2 3) (4 5 6) (7 8 9))
+  ((1 2 3) (1 4 5) (1 6 7))
 
   graph - the graph
   node-id - (optional), the id of the node to start reconstructing sequences at in the graph.
@@ -45,3 +45,15 @@
                ;; not a seq yet, wrap in seq. the extra list will be removed by the apply / concat
                (list (list node-value))
                (map #(cons node-value %) (items graph edge-id))))))))
+
+(defn complete
+  "Given a sequence returns all the completed sequences. nil is returned
+  if no sequence completions can be found.
+
+  graph - the graph to search for completions
+  value - the value to search the graph for. value is expected to be
+          convertable into a sequence."
+  [graph value]
+  (if-let [final-node (private/get-final-node graph value)]
+    (for [item (items graph final-node)]
+      (concat (seq value) (rest item)))))

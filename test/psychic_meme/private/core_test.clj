@@ -109,3 +109,17 @@
       (is (not (nil? node-id-1)))
       (is (not (nil? node-id-2)))
       (is (not (nil? node-id-3))))))
+
+(deftest get-final-node-test
+  (let [graph (dawg/create)
+        value (list 1 2 3)
+        graph (add-value graph value)
+        graph (add-value graph '(1 2 4 5 6))
+        node-id-1 (get-child graph nil 1)
+        node-id-2 (get-child graph node-id-1 2)
+        node-id-3 (get-child graph node-id-2 3)]
+    (is (nil? (get-final-node graph '())))
+    (is (nil? (get-final-node graph '(5 6 7))))
+    (is (= node-id-1 (get-final-node graph '(1))))
+    (is (= node-id-2 (get-final-node graph '(1 2))))
+    (is (= node-id-3 (get-final-node graph '(1 2 3))))))

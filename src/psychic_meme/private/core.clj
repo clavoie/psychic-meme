@@ -99,3 +99,22 @@
                  (first other-values)
                  (rest other-values)
                  dawg))))))
+
+(defn get-final-node
+  "Returns the final node-id in the sequence (seq value), or nil if the given
+  sequence does not exist in the graph
+
+  graph - the graph to search
+  value - the value to use to search the graph. (seq value) will be used
+          to search the graph"
+  [graph value]
+  (if-let [seq-value (seq value)]
+    (loop [node-id nil
+           value (first seq-value)
+           other-values (rest seq-value)]
+      (if (nil? value)
+        node-id
+        (if-let [child-id (get-child graph node-id value)]
+          (recur child-id
+                 (first other-values)
+                 (rest other-values)))))))
