@@ -2,6 +2,12 @@
 
 [Radix Tree](http://en.wikipedia.org/wiki/Radix_tree) for Clojure
 
+## Installation
+
+Add the following dependency to your `project.clj` file:
+
+[![Clojars Project](http://clojars.org/psychic-meme/latest-version.svg)](http://clojars.org/psychic-meme)
+
 ## Usage
 
 ```clojure
@@ -43,6 +49,11 @@ user=> (complete graph2 [1 2])
 ((1 2 7) (1 2 3))
 
 ```
+
+## Documentation
+
+[API](http://clavoie.github.io/psychic-meme/)
+
 ## Todos
 
 1. Allow the user to define an equality function for comparing node values
