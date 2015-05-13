@@ -40,7 +40,7 @@
       (is (nil? value))))
   (testing "Set node value is returned"
     (let [test-value 1
-          graph (update-in (dawg/create) [nil :value] (fn [v] test-value))
+          graph (update-in (dawg/create) [:graph nil :value] (fn [v] test-value))
           value (get-value graph nil)]
       (is (= value test-value)))))
 
@@ -59,7 +59,9 @@
           id-2 (gensym)
           node-1 (create-node value-1)
           node-2 (create-node value-2)
-          graph (assoc (dawg/create) id-1 node-1 id-2 node-2)
+          graph (dawg/create)
+          graph (assoc-in graph [:graph id-1] node-1)
+          graph (assoc-in graph [:graph id-2] node-2)
           graph (add-edge (add-edge graph nil id-1) nil id-2)
           search-fn-1 (search-fn graph value-1)
           search-fn-2 (search-fn graph value-2)]
@@ -77,7 +79,9 @@
           id-2 (gensym)
           node-1 (create-node value-1)
           node-2 (create-node value-2)
-          graph (assoc (dawg/create) id-1 node-1 id-2 node-2)
+          graph (dawg/create)
+          graph (assoc-in graph [:graph id-1] node-1)
+          graph (assoc-in graph [:graph id-2] node-2)
           graph (add-edge (add-edge graph nil id-1) nil id-2)]
       (is (= id-1 (get-child graph nil value-1)))
       (is (= id-2 (get-child graph nil value-2))))))
@@ -105,7 +109,7 @@
           node-id-1 (get-child graph nil 1)
           node-id-2 (get-child graph node-id-1 2)
           node-id-3 (get-child graph node-id-2 3)]
-      (is (= 4 (count graph)))
+      (is (= 4 (count (get-graph graph))))
       (is (not (nil? node-id-1)))
       (is (not (nil? node-id-2)))
       (is (not (nil? node-id-3))))))

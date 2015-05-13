@@ -7,4 +7,7 @@
   :global-vars {*warn-on-reflection* true}
   :plugins [[codox "0.6.6"]]
   :codox {:src-dir-uri "http://github.com/clavoie/psychic-meme/blob/master/"
-          :src-linenum-anchor-prefix "L"})
+          :src-linenum-anchor-prefix "L"}
+  :test-selectors {:default (complement :single)
+                   :single :single
+                   :all (fn [_] true)})

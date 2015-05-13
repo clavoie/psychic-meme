@@ -2,9 +2,14 @@
   (:require [psychic-meme.private.core :as private]))
 
 (defn create
-  "Creates a new directed acyclic graph"
-  []
-  (sorted-map nil (private/create-node nil)))
+  "Creates a new directed acyclic graph
+
+  keys
+    :equality-fn - a function used to compare elements of the sequence.
+                   If no function is supplied  clojure.core/= is used by default"
+  [& {:keys [equality-fn] :or {equality-fn clojure.core/=}}]
+  {:graph (sorted-map nil (private/create-node nil))
+   :equality-fn equality-fn})
 
 (defn add
   "Adds the items of a seq to the graph, returning the new graph.

@@ -6,13 +6,13 @@
 (deftest create-test
   (let [graph (create)]
     (is (map? graph))
-    (is (sorted? graph))
-    (is (not (nil? (get graph nil))))))
+    (is (sorted? (private/get-graph graph)))
+    (is (not (nil? (get-in graph [:graph nil]))))))
 
 (deftest add-test
   (let [graph (create)
         graph (add graph ["hello" "hi"])
-        node-count (count graph)
+        node-count (count (private/get-graph graph))
         root-edges (count (private/get-edges graph nil))]
     (is (= node-count 7))
     (is (= root-edges 1))))

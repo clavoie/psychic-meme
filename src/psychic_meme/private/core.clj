@@ -1,5 +1,19 @@
 (ns psychic-meme.private.core)
 
+(defn get-graph
+  "Returns the graph of nodes which makes up the radix tree
+
+  graph - the radix tree"
+  [graph]
+  (get graph :graph))
+
+(defn get-equality-fn
+  "Returns the equality fn used to compare nodes of the tree
+
+  graph - the radix tree"
+  [graph]
+  (get graph :equality-fn))
+
 (defn create-node
   "Creates a new node in the directed graph.
 
@@ -14,7 +28,7 @@
   node-id - the id of the node to add to the graph
   value - the value of the node"
   [graph node-id value]
-  (assoc graph node-id (create-node value)))
+  (assoc-in graph [:graph node-id] (create-node value)))
 
 (defn get-edges
   "Returns the edges for a node
@@ -22,7 +36,7 @@
   graph - the graph containing the node
   node-id - the id of the node in the graph"
   [graph node-id]
-  (get-in graph [node-id :edges]))
+  (get-in graph [:graph node-id :edges]))
 
 (defn get-value
   "Returns the value for a node
@@ -30,7 +44,7 @@
   graph - the graph containing the node
   node-id - the id of the node in the graph"
   [graph node-id]
-  (get-in graph [node-id :value]))
+  (get-in graph [:graph node-id :value]))
 
 (defn add-edge
   "Adds an edge from a parent node to a child node
@@ -39,7 +53,7 @@
   from-id - the node id from which the edge will be originating
   to-id - the node id to which the edge terminates"
   [graph from-id to-id]
-  (update-in graph [from-id :edges] #(conj % to-id)))
+  (update-in graph [:graph from-id :edges] #(conj % to-id)))
 
 (defn search-fn
   "Searches for a node with a particular value.
@@ -51,7 +65,7 @@
   graph - the graph containing the nodes to search
   value - the value to search for"
   [graph value]
-  #(if (= (get-value graph %) value) %))
+  #(if ((get-equality-fn graph) (get-value graph %) value) %))
 
 (defn get-child
   "Returns the edge id of the edge node with a specific value
