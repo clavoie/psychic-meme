@@ -4,10 +4,20 @@
             [psychic-meme.private.core :as private]))
 
 (deftest create-test
-  (let [graph (create)]
-    (is (map? graph))
-    (is (sorted? (private/get-graph graph)))
-    (is (not (nil? (get-in graph [:graph nil]))))))
+  (let [radix-tree (create)]
+    (is (map? radix-tree))
+    (is (fn? (private/get-equality-fn radix-tree)))
+    (is (sorted? (private/get-graph radix-tree)))
+    (is (not (nil? (get-in radix-tree [:graph nil]))))))
+
+(deftest add-custom-objects-test
+  (let [my-equality-fn #(= (get %1 :a) (get %2 :a))
+        radix-tree (create :equality-fn my-equality-fn)
+        radix-tree (add radix-tree [[{:a 1} {:a 2} {:a 3}] [{:a 1} {:a 2} {:a 4}]])
+        node-count (count (private/get-graph radix-tree))
+        root-edges (count (private/get-edges radix-tree nil))]
+    (is (= node-count 5))
+    (is (= root-edges 1))))
 
 (deftest add-test
   (let [graph (create)

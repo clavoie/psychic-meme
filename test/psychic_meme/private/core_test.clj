@@ -3,6 +3,23 @@
             [psychic-meme.core :as dawg]
             [psychic-meme.private.core :refer :all]))
 
+(deftest get-graph-test
+  (testing "Graph of nodes is returned"
+    (let [radix-tree (dawg/create)
+          test-seq "hello"
+          radix-tree (dawg/add radix-tree [test-seq])
+          graph (get-graph radix-tree)]
+      (is (map? graph))
+      (is (= (+ 1 (count test-seq)) (count graph))))))
+
+(deftest get-equality-fn-test
+  (testing "Default equality fn is returned"
+    (is (= clojure.core/= (get-equality-fn (dawg/create)))))
+  (testing "Custom equality fn is returned"
+    (let [my-equality-fn #(= %1 %2)
+          radix-tree (dawg/create :equality-fn my-equality-fn)]
+      (is (= my-equality-fn (get-equality-fn radix-tree))))))
+
 (deftest create-node-test
   (testing "Node created as a map with appropriate fields"
     (let [test-value 1
