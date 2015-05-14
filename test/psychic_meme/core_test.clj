@@ -15,9 +15,13 @@
         radix-tree (create :equality-fn my-equality-fn)
         radix-tree (add radix-tree [[{:a 1} {:a 2} {:a 3}] [{:a 1} {:a 2} {:a 4}]])
         node-count (count (private/get-graph radix-tree))
-        root-edges (count (private/get-edges radix-tree nil))]
+        root-edges (count (private/get-edges radix-tree nil))
+        seq-items (seq (items radix-tree))]
     (is (= node-count 5))
-    (is (= root-edges 1))))
+    (is (= root-edges 1))
+    (is (= 2 (count seq-items)))
+    (is (some #(= (list {:a 1} {:a 2} {:a 3}) %) seq-items))
+    (is (some #(= (list {:a 1} {:a 2} {:a 4}) %) seq-items))))
 
 (deftest add-test
   (let [graph (create)
